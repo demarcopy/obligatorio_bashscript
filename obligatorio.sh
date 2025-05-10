@@ -14,7 +14,7 @@ while true; do
         1)
             echo "Opcion 1." #Test
 
-            if[-z $ruta]; then
+            if [ -z $ruta ]; then
                 echo "Variable vacia"
             else 
                 echo "variable con contenido"
@@ -22,7 +22,7 @@ while true; do
         ;;
         2)
             echo "Opcion 2." #Test
-            if[-z $ruta]; then
+            if [ -z $ruta ]; then
                 echo "Variable vacia"
             else 
                 echo "variable con contenido"
@@ -33,7 +33,7 @@ while true; do
         ;;
         4)
             echo "Opcion 4." #Test
-            if[-z $ruta]; then
+            if [ -z $ruta ]; then
                 echo "Variable vacia"
             else 
                 echo "variable con contenido"
@@ -44,7 +44,7 @@ while true; do
         ;;
         6)
             echo "Opcion 6." #Test
-            if[-z $ruta]; then
+            if [ -z $ruta ]; then
                 echo "Variable vacia"
             else 
                 echo "variable con contenido"
@@ -56,6 +56,7 @@ while true; do
         ;;
         8)
             echo "Saliendo..."
+            break
         ;;
         *)
             echo "Debe ingresar un codigo correcto"
