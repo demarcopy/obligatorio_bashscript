@@ -13,24 +13,46 @@ while true; do
         case $opcion in
         1)
             echo "Opcion 1." #Test
+
+            if[-z $ruta]; then
+                echo "Variable vacia"
+            else 
+                echo "variable con contenido"
+            fi
         ;;
         2)
             echo "Opcion 2." #Test
+            if[-z $ruta]; then
+                echo "Variable vacia"
+            else 
+                echo "variable con contenido"
+            fi            
         ;;
         3)
             echo "Opcion 3." #Test
         ;;
         4)
             echo "Opcion 4." #Test
+            if[-z $ruta]; then
+                echo "Variable vacia"
+            else 
+                echo "variable con contenido"
+            fi            
         ;;
         5)
             echo "Opcion 5." #Test
         ;;
         6)
             echo "Opcion 6." #Test
+            if[-z $ruta]; then
+                echo "Variable vacia"
+            else 
+                echo "variable con contenido"
+            fi            
         ;;
         7)
-            echo "Opcion 7." #Test
+            echo "Ingrese la ruta deseada:" #Test
+            read=ruta
         ;;
         8)
             echo "Saliendo..."
