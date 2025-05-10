@@ -52,7 +52,8 @@ while true; do
         ;;
         7)
             echo "Ingrese la ruta deseada:" #Test
-            read=ruta
+            read ruta
+            echo "   "
         ;;
         8)
             echo "Saliendo..."
