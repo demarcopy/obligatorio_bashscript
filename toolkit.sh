@@ -1,3 +1,4 @@
+#Script elaborado por:
 while true; do
     echo "---------- Menu -----------"
     echo "1) Propiedades de la carpeta"
