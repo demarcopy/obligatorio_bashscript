@@ -15,10 +15,16 @@ archivosCantidad(){
     #a) Muestra cuantos archivos hay dentro diferenciando la cantidad que se encuentran dentro de la ruta y la cantidad de los que se encuentran dentro de subcarpetas (dentro de la ruta)
     #b) Mostrar el nombre del archivo de menor tamaño y el de mayor tamaño.    
         echo "Los archivos dentro de $ruta son:"
-        find $ruta -type f -maxdepth 1| wc -l
+        find $ruta -maxdepth 1 -type f | wc -l
         echo "Los archivos dentro de subcarpetas son:"
-        find $ruta -type f -mindepth 1 | wc -l
+        find $ruta -mindepth 2 -type f | wc -l
 
+}
+
+renombrarArchivos(){
+    #Renombra los archivos dentro de la carpeta y subcarpetas
+    echo "Renombrando archivos..."
+    find $ruta -type f -exec mv {} {}bck \;
 }
 
 while true; do
@@ -33,44 +39,50 @@ while true; do
     echo "8) Salir del menu"
     echo -n "Ingrese una opcion: "
     read -r opcion
-case $opcion in
-    1)
-        echo "Opcion 1." 
-        if [ -z "$ruta" ]; then
-            echo "Defina la ruta primero"
-        else 
-            archivosCantidad
-        fi
-    ;;
-    2)
-        echo "Opcion 2." #Test
+    case $opcion in
+        1)
+            echo "Opcion 1." 
+            if [ -z $ruta ]; then
+                echo "Defina la ruta primero"
 
-    ;;
-    3)
-        echo "Opcion 3." #Test
-    ;;
-    4)
-        echo "Opcion 4." #Test
-        
-    ;;
-    5)
-        echo "Opcion 5." #Test
-    ;;
-    6)
-        echo "Opcion 6." #Test
-                    
-    ;;
-    7)
-        definirRuta
-    ;;
-    8)
-        echo "Saliendo..."
-        break
-    ;;
-    *)
-        echo "Debe ingresar un codigo correcto"
-    ;;
-    esac
+            else 
+                archivosCantidad
+            fi
+        ;;
+        2)
+            echo "Opcion 2." #Test
+            renombrarArchivos
+        ;;
+        3)
+            #Muestra un resumen del estado del disco duro
+            echo "Opcion 3." #Test
+            df -h
+            echo "Leyendo archivo de mayor tamaño por favor aguarde al resultado: "
+            find / -type f -exec du -h {} + 2>/dev/null | sort -rh | head -1
 
-echo "   "
+        ;;
+        4)
+            echo "Opcion 4." #Test
+            
+        ;;
+        5)
+            echo "Opcion 5." #Test
+        ;;
+        6)
+            echo "Opcion 6." #Test
+                        
+        ;;
+        7)
+            definirRuta
+        ;;
+        8)
+            echo "Saliendo..."
+            break
+        ;;
+        *)
+            echo "Debe ingresar un codigo correcto"
+        ;;
+        esac
+
+    echo "   "
 done
