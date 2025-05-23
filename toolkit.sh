@@ -21,11 +21,19 @@ archivosCantidad(){
 
 }
 
+guardarURL(){
+    #Pide una URL, guarda en un txt dicho contenido (pide la ruta al usuario, el nombre del archivo debe ser
+    echo "Ingrese la URL a guardar: "
+    read -r webpage
+    echo "$webpage" > $ruta/paginaweb.txt
+}
+
 renombrarArchivos(){
     #Renombra los archivos dentro de la carpeta y subcarpetas
     echo "Renombrando archivos..."
     find $ruta -type f -exec mv {} {}bck \;
 }
+
 
 while true; do
     echo "---------- Menu -----------"
@@ -50,30 +58,36 @@ while true; do
             fi
         ;;
         2)
-            echo "Opcion 2." #Test
+            echo "Opcion 2."
             renombrarArchivos
         ;;
         3)
             #Muestra un resumen del estado del disco duro
-            echo "Opcion 3." #Test
+            echo "Opcion 3."
             df -h
             echo "Leyendo archivo de mayor tamaño por favor aguarde al resultado: "
             find / -type f -exec du -h {} + 2>/dev/null | sort -rh | head -1
 
         ;;
         4)
-            echo "Opcion 4." #Test
+            echo "Opcion 4." 
             
         ;;
         5)
-            echo "Opcion 5." #Test
+            echo "Opcion 5." 
         ;;
         6)
-            echo "Opcion 6." #Test
-                        
+            echo "Opcion 6."
+            if [ -z $ruta ]; then
+               echo "Defina la ruta primero"
+
+            else 
+                guardarURL
+            fi         
         ;;
-        7)
+        7)  
             definirRuta
+            
         ;;
         8)
             echo "Saliendo..."
