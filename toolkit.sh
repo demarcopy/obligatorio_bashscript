@@ -29,6 +29,10 @@ renombrarArchivos(){
     find $ruta -type f -exec mv {} {}bck \;
 }
 
+buscarPalabra(){
+    echo "Buscando '$palabra' en los archivos de la ruta $ruta..."
+    grep -rnw "$ruta" -e "$palabra"
+}
 
 while true; do
     echo "---------- Menu -----------"
@@ -55,7 +59,7 @@ while true; do
         ;;
         2)
             echo "Opcion 2."
-            if [ -z $ruta]; then
+            if [ -z $ruta ]; then
                 echo "Defina la ruta primero"
                 definirRuta
                 renombrarArchivos
@@ -72,7 +76,15 @@ while true; do
         ;;
         4)
             echo "Opcion 4." 
-            
+            echo "Ingrese la palabra que desea buscar" 
+            read palabra             
+            if [ -z $ruta ]; then
+                echo "Defina la ruta primero"
+                definirRuta
+                buscarPalabra
+            else
+                buscarPalabra
+            fi
         ;;
         5)
             echo "Opcion 5." 
