@@ -31,7 +31,14 @@ renombrarArchivos(){
 
 buscarPalabra(){
     echo "Buscando '$palabra' en los archivos de la ruta $ruta..."
-    grep -rnw "$ruta" -e "$palabra"
+    echo "Se encontraron las siguientes coincidencias:"
+    resultado=$(grep -rnw "$ruta" -e "$palabra" 2>/dev/null)
+    if [ -z $resultado ]; then
+        echo "No se encontraron coincidencias"
+    else
+        echo "Se encontraron estas coincidencias"
+        echo "$resultado"
+    fi
 }
 
 while true; do
