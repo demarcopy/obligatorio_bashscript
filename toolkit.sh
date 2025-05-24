@@ -55,7 +55,7 @@ while true; do
         ;;
         2)
             echo "Opcion 2."
-            if [-z $ruta]; then
+            if [ -z $ruta]; then
                 echo "Defina la ruta primero"
                 definirRuta
                 renombrarArchivos
