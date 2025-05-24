@@ -1,5 +1,5 @@
 #!/bin/bash
-#Creado por: Garcia .J, De Marco .R, Suarez .R
+#Creado por: Garcia .J, Demarco .R, Suarez .R
 definirRuta(){
 echo "Ingrese la ruta deseada:"
 read -r ruta
@@ -11,22 +11,20 @@ else
     definirRuta
 fi
 }
+archivosCantidad(){ 
         echo "Los archivos dentro de $ruta son:"
         find $ruta -maxdepth 1 -type f | wc -l
         echo "Los archivos dentro de subcarpetas son:"
         find $ruta -mindepth 2 -type f | wc -l
-
 }
 
 guardarURL(){
-    #Pide una URL, guarda en un txt dicho contenido (pide la ruta al usuario, el nombre del archivo debe ser
     echo "Ingrese la URL a guardar: "
     read -r webpage
     echo "$webpage" > $ruta/paginaweb.txt
 }
 
 renombrarArchivos(){
-    #Renombra los archivos dentro de la carpeta y subcarpetas
     echo "Renombrando archivos..."
     find $ruta -type f -exec mv {} {}bck \;
 }
@@ -49,17 +47,23 @@ while true; do
             echo "Opcion 1." 
             if [ -z $ruta ]; then
                 echo "Defina la ruta primero"
-
+                definirRuta
+                archivosCantidad
             else 
                 archivosCantidad
             fi
         ;;
         2)
             echo "Opcion 2."
-            renombrarArchivos
+            if [-z $ruta]; then
+                echo "Defina la ruta primero"
+                definirRuta
+                renombrarArchivos
+            else
+                renombrarArchivos
+            fi
         ;;
         3)
-            #Muestra un resumen del estado del disco duro
             echo "Opcion 3."
             df -h
             echo "Leyendo archivo de mayor tamaño por favor aguarde al resultado: "
@@ -77,7 +81,8 @@ while true; do
             echo "Opcion 6."
             if [ -z $ruta ]; then
                echo "Defina la ruta primero"
-
+               definirRuta
+               guardarURL
             else 
                 guardarURL
             fi         
