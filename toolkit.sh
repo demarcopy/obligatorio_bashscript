@@ -34,7 +34,6 @@ renombrarArchivos(){
     find $ruta -type f -exec mv {} {}bck \;
 }
 
-
 while true; do
     echo "---------- Menu -----------"
     echo "1) Propiedades de la carpeta"
@@ -97,6 +96,5 @@ while true; do
             echo "Debe ingresar un codigo correcto"
         ;;
         esac
-
     echo "   "
 done
