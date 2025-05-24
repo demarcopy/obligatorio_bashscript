@@ -94,6 +94,9 @@ while true; do
         ;;
         5)
             echo "Opcion 5." 
+            echo "Usuario actual: $(whoami)"
+            echo "El sistema se encendió el: $(uptime -s)"
+            echo "Fecha y hora actual: $(date)"
         ;;
         6)
             echo "Opcion 6."
