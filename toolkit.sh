@@ -1,4 +1,40 @@
-#Script elaborado por: hola
+#!/bin/bash
+#Creado por: Garcia .J, De Marco .R, Suarez .R
+definirRuta(){
+echo "Ingrese la ruta deseada:"
+read -r ruta
+echo "Ruta definida: $ruta"
+if [ -d $ruta ]; then
+    echo "La ruta es correcta"
+else
+    echo "La ruta no existe"
+    definirRuta
+fi
+}
+archivosCantidad(){
+    #a) Muestra cuantos archivos hay dentro diferenciando la cantidad que se encuentran dentro de la ruta y la cantidad de los que se encuentran dentro de subcarpetas (dentro de la ruta)
+    #b) Mostrar el nombre del archivo de menor tamaño y el de mayor tamaño.    
+        echo "Los archivos dentro de $ruta son:"
+        find $ruta -maxdepth 1 -type f | wc -l
+        echo "Los archivos dentro de subcarpetas son:"
+        find $ruta -mindepth 2 -type f | wc -l
+
+}
+
+guardarURL(){
+    #Pide una URL, guarda en un txt dicho contenido (pide la ruta al usuario, el nombre del archivo debe ser
+    echo "Ingrese la URL a guardar: "
+    read -r webpage
+    echo "$webpage" > $ruta/paginaweb.txt
+}
+
+renombrarArchivos(){
+    #Renombra los archivos dentro de la carpeta y subcarpetas
+    echo "Renombrando archivos..."
+    find $ruta -type f -exec mv {} {}bck \;
+}
+
+
 while true; do
     echo "---------- Menu -----------"
     echo "1) Propiedades de la carpeta"
@@ -9,52 +45,49 @@ while true; do
     echo "6) Guardar URL"
     echo "7) Ingresar ruta"
     echo "8) Salir del menu"
-    read opcion
-
-        case $opcion in
+    echo -n "Ingrese una opcion: "
+    read -r opcion
+    case $opcion in
         1)
-            echo "Opcion 1." #Test
-
+            echo "Opcion 1." 
             if [ -z $ruta ]; then
-                echo "Variable vacia"
+                echo "Defina la ruta primero"
+
             else 
-                echo "variable con contenido"
+                archivosCantidad
             fi
         ;;
         2)
-            echo "Opcion 2." #Test
-            if [ -z $ruta ]; then
-                echo "Variable vacia"
-            else 
-                echo "variable con contenido"
-            fi            
+            echo "Opcion 2."
+            renombrarArchivos
         ;;
         3)
-            echo "Opcion 3." #Test
+            #Muestra un resumen del estado del disco duro
+            echo "Opcion 3."
+            df -h
+            echo "Leyendo archivo de mayor tamaño por favor aguarde al resultado: "
+            find / -type f -exec du -h {} + 2>/dev/null | sort -rh | head -1
+
         ;;
         4)
-            echo "Opcion 4." #Test
-            if [ -z $ruta ]; then
-                echo "Variable vacia"
-            else 
-                echo "variable con contenido"
-            fi            
+            echo "Opcion 4." 
+            
         ;;
         5)
-            echo "Opcion 5." #Test
+            echo "Opcion 5." 
         ;;
         6)
-            echo "Opcion 6." #Test
+            echo "Opcion 6."
             if [ -z $ruta ]; then
-                echo "Variable vacia"
+               echo "Defina la ruta primero"
+
             else 
-                echo "variable con contenido"
-            fi            
+                guardarURL
+            fi         
         ;;
-        7)
-            echo "Ingrese la ruta deseada:" #Test
-            read ruta
-            echo "   "
+        7)  
+            definirRuta
+            
         ;;
         8)
             echo "Saliendo..."
