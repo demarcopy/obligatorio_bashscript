@@ -11,9 +11,6 @@ else
     definirRuta
 fi
 }
-archivosCantidad(){
-    #a) Muestra cuantos archivos hay dentro diferenciando la cantidad que se encuentran dentro de la ruta y la cantidad de los que se encuentran dentro de subcarpetas (dentro de la ruta)
-    #b) Mostrar el nombre del archivo de menor tamaño y el de mayor tamaño.    
         echo "Los archivos dentro de $ruta son:"
         find $ruta -maxdepth 1 -type f | wc -l
         echo "Los archivos dentro de subcarpetas son:"
