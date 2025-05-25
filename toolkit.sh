@@ -63,6 +63,7 @@ while true; do
             else 
                 archivosCantidad
             fi
+            read -p "Presione Enter para continuar..."
         ;;
         2)
             echo "Opcion 2."
@@ -73,12 +74,14 @@ while true; do
             else
                 renombrarArchivos
             fi
+            read -p "Presione Enter para continuar..."
         ;;
         3)
             echo "Opcion 3."
             df -h
             echo "Leyendo archivo de mayor tamaño por favor aguarde al resultado: "
             find / -type f -exec du -h {} + 2>/dev/null | sort -rh | head -1
+            read -p "Presione Enter para continuar..."
 
         ;;
         4)
@@ -92,12 +95,14 @@ while true; do
             else
                 buscarPalabra
             fi
+            read -p "Presione Enter para continuar..."
         ;;
         5)
             echo "Opcion 5." 
             echo "Usuario actual: $(whoami)"
             echo "El sistema se encendió el: $(uptime -s)"
             echo "Fecha y hora actual: $(date)"
+            read -p "Presione Enter para continuar..."
         ;;
         6)
             echo "Opcion 6."
@@ -108,10 +113,11 @@ while true; do
             else 
                 guardarURL
             fi         
+            read -p "Presione Enter para continuar..."
         ;;
         7)  
             definirRuta
-            
+            read -p "Presione Enter para continuar..."
         ;;
         8)
             echo "Saliendo..."
@@ -119,6 +125,7 @@ while true; do
         ;;
         *)
             echo "Debe ingresar un codigo correcto"
+            read -p "Presione Enter para continuar..."
         ;;
         esac
 
