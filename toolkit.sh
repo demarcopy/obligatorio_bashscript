@@ -41,6 +41,7 @@ buscarPalabra(){
 }
 
 while true; do
+    clear
     echo "---------- Menu -----------"
     echo "1) Propiedades de la carpeta"
     echo "2) Renombrar archivos"
