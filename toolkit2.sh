@@ -1,6 +1,12 @@
 #!/bin/bash
 #Creado por: Garcia .J, Demarco .R, Suarez .R
 
+if [ ! -x "$0" ]; then
+    chmod +x "$0"
+    exec "$0" "$@"
+    exit
+fi
+
 ruta_guardada=""
 
 obtenerRuta(){
