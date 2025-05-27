@@ -59,6 +59,7 @@ archivosCantidad(){
 
 guardarURL(){
     local ruta="$1"
+    read -r -p "Ingrese la URL a guardar: " webpage
     if wget --spider -q "$webpage"; then
         if wget -q -O "$ruta/paginaweb.txt" "$webpage"; then
             if [ -s "$ruta/paginaweb.txt" ]; then
