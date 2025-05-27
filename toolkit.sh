@@ -9,67 +9,69 @@ fi
 
 ruta_guardada=""
 
-obtenerRuta(){
+
+
+obtenerRuta() {
     local mensaje="$1"
     if [ -n "$ruta_guardada" ]; then
-        echo "$ruta_guardada"
-        return 0
-    else
-        while true; do
-            read -r -p "$mensaje" ruta
-            if [ -d "$ruta" ]; then
-                echo "$ruta"
-                return 0
-            else
-                echo "La ruta no es válida o no existe, intente nuevamente."
-            fi
-        done
-    fi
-}
+        read -r -p "¿Desea cambiar la ruta? (s/n): " respuesta
 
-definirRuta(){
-    while true; do
-        read -p "Ingrese la ruta deseada: " ruta_guardada
-        if [ -d $ruta_guardada ]; then
-            echo "Ruta definida con exito: $ruta_guardada"
-            break
+        if [[ "$respuesta" =~ ^[sS]$ ]]; then
+            unset ruta_guardada
         else
-            echo "La ruta no existe, intente nuevamente..."
+            echo "$ruta_guardada"
+            return 0
+        fi
+    fi
+    while true; do
+        read -r -p "$mensaje" ruta
+        if [ -d "$ruta" ]; then
+            ruta_guardada="$ruta"
+            echo "$ruta_guardada"
+            return 0
+        else
+            echo "La ruta no es válida o no existe, intente nuevamente."
         fi
     done
 }
 
+
+
 archivosCantidad(){ 
-    local ruta="$1"
-    archivos_carpeta=$(find "$ruta" -maxdepth 1 -type f | wc -l)
-    archivos_subcarpetas=$(find "$ruta" -mindepth 2 -type f | wc -l)
-    archivo_mayor=$(find "$ruta" -type f -exec du -h {} + 2>/dev/null | sort -rh | head -1 | cut -f2)
-    archivo_menor=$(find "$ruta" -type f -exec du -h {} + 2>/dev/null | sort -h | head -1 | cut -f2)
-    echo "Archivos en carpeta $ruta: $archivos_carpeta"
+    archivos_carpeta=$(find "$ruta_guardada" -maxdepth 1 -type f | wc -l)
+    archivos_subcarpetas=$(find "$ruta_guardada" -mindepth 2 -type f | wc -l)
+    archivo_mayor=$(find "$ruta_guardada" -type f -exec du -h {} + 2>/dev/null | sort -rh | head -1 | cut -f2)
+    archivo_menor=$(find "$ruta_guardada" -type f -exec du -h {} + 2>/dev/null | sort -h | head -1 | cut -f2)
+    echo "Archivos en carpeta $ruta_guardada: $archivos_carpeta"
     echo "Archivos en subcarpetas: $archivos_subcarpetas"
     echo "Archivo más grande: $archivo_mayor"
     echo "Archivo más chico: $archivo_menor"
+    read -p "Presione Enter para continuar..."
 }
 
 guardarURL(){
     local ruta="$1"
     read -r -p "Ingrese la URL a guardar: " webpage
-    if wget -q -O "$ruta/paginaweb.txt" "$webpage"; then
+    if wget --spider -q "$webpage"; then
+        if wget -q -O "$ruta/paginaweb.txt" "$webpage"; then
         echo "Contenido de $webpage guardado en $ruta/paginaweb.txt"
-    else
+        else
         echo "Error al descargar la URL $webpage"
+        fi
+    else
+        echo "La URL ingresada no es válida o no es accesible."
     fi
 }
 
 renombrarArchivos(){
     local ruta="$1"
     echo "Renombrando archivos en $ruta..."
-    find "$ruta" -type f -exec mv -- '{}' '{}bck' \;
+    find "$ruta" -maxdepth 1 -type f -exec mv -- '{}' '{}bck' \;
 }
 
 buscarPalabra(){
-    local ruta="$1"
-    local palabra="$2"
+    local ruta="$ruta_guardada"
+    local palabra="$1"
     echo "Buscando '$palabra' en los archivos de $ruta..."
     resultado=$(grep -rnw "$ruta" -e "$palabra" 2>/dev/null)
     if [ -z "$resultado" ]; then
@@ -77,6 +79,18 @@ buscarPalabra(){
     else
         echo "Coincidencias encontradas:"
         echo "$resultado"
+    fi
+}
+
+verificarRuta() {
+    local funcion="$1"
+    shift
+    if [ -n "$ruta_guardada" ]; then
+        echo "La ruta actual es: $ruta_guardada"
+        $funcion "$ruta_guardada"
+    else
+        echo "No se ha definido una ruta, volviendo al menú principal"
+        sleep 3
     fi
 }
 
@@ -95,14 +109,11 @@ while true; do
     case $opcion in
         1)
             echo "Opcion 1." 
-            ruta=$(obtenerRuta "Ingrese la ruta de la carpeta: ")
-            archivosCantidad "$ruta"
-            read -p "Presione Enter para continuar..."
+            verificarRuta archivosCantidad
         ;;
         2)
             echo "Opcion 2."
-            ruta=$(obtenerRuta "Ingrese la ruta de la carpeta: ")
-            renombrarArchivos "$ruta"
+            verificarRuta renombrarArchivos
             read -p "Presione Enter para continuar..."
         ;;
         3)
@@ -112,13 +123,11 @@ while true; do
             echo "Nota: Algunas carpetas no son accesibles debido a permisos insuficientes."
             find / -type f -exec du -h {} + 2>/dev/null | sort -rh | head -1
             read -p "Presione Enter para continuar..."
-
         ;;
         4)
             echo "Opcion 4."
-            ruta=$(obtenerRuta "Defina la ruta: ")  
-            read -r -p "Ingrese la palabra que desea buscar: " palabra             
-            buscarPalabra "$ruta" "$palabra"
+            read -r -p "Ingrese la palabra a buscar: " palabra
+            verificarRuta buscarPalabra "$palabra"
             read -p "Presione Enter para continuar..."
         ;;
         5)
@@ -130,14 +139,13 @@ while true; do
         ;;
         6)
             echo "Opcion 6."
-            ruta=$(obtenerRuta "Ingrese la ruta de la carpeta: ")
-            guardarURL "$ruta"    
+            verificarRuta guardarURL
             read -p "Presione Enter para continuar..."
         ;;
         7)
             echo "Opcion 7."  
             echo "----------"
-            definirRuta
+            ruta_guardada=$(obtenerRuta "Ingrese la ruta de la carpeta: ")
             read -p "Presione Enter para continuar..."
         ;;
         8)
@@ -145,7 +153,7 @@ while true; do
             break
         ;;
         *)
-            echo "Debe ingresar un codigo correcto"
+            echo "Debe ingresar un código correcto"
             read -p "Presione Enter para continuar..."
         ;;
         esac
