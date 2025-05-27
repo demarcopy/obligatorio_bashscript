@@ -12,6 +12,7 @@ ruta_guardada=""
 obtenerRuta(){
     local mensaje="$1"
     if [ -n "$ruta_guardada" ]; then
+        printf "utilizando ruta guardada: '$ruta_guardada'" >&2
         echo "$ruta_guardada"
         return 0
     else
@@ -98,19 +99,22 @@ while true; do
     read -r -p "Ingrese una opcion: " opcion
     case $opcion in
         1)
-            echo "Opcion 1." 
+            echo "Opcion 1."
+            echo "---------" 
             ruta=$(obtenerRuta "Ingrese la ruta de la carpeta: ")
             archivosCantidad "$ruta"
             read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
         ;;
         2)
             echo "Opcion 2."
+            echo "---------"
             ruta=$(obtenerRuta "Ingrese la ruta de la carpeta: ")
             renombrarArchivos "$ruta"
             read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
         ;;
         3)
             echo "Opcion 3."
+            echo "---------"
             df -h
             echo "Leyendo archivo de mayor tamaño por favor aguarde al resultado: "
             echo "Nota: Algunas carpetas no son accesibles debido a permisos insuficientes."
@@ -120,13 +124,15 @@ while true; do
         ;;
         4)
             echo "Opcion 4."
+            echo "---------"
             ruta=$(obtenerRuta "Defina la ruta: ")  
             read -r -p "Ingrese la palabra que desea buscar: " palabra             
             buscarPalabra "$ruta" "$palabra"
             read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
         ;;
         5)
-            echo "Opcion 5." 
+            echo "Opcion 5."
+            echo "---------"
             echo "Usuario actual: $(whoami)"
             echo "El sistema se encendió el: $(uptime -s)"
             echo "Fecha y hora actual: $(date)"
@@ -134,13 +140,17 @@ while true; do
         ;;
         6)
             echo "Opcion 6."
+            echo "---------"
             ruta=$(obtenerRuta "Ingrese la ruta de la carpeta: ")
             guardarURL "$ruta"    
             read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
         ;;
         7)
             echo "Opcion 7."  
-            echo "----------"
+            echo "---------"
+            if [ -n "$ruta_guardada" ]; then
+                echo "Ruta guarada actual: '$ruta_guarada'"
+            else
             definirRuta
             read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
         ;;
