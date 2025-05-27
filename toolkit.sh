@@ -12,7 +12,7 @@ ruta_guardada=""
 obtenerRuta(){
     local mensaje="$1"
     if [ -n "$ruta_guardada" ]; then
-        printf "utilizando ruta guardada: '$ruta_guardada'" >&2
+        echo "utilizando ruta guardada: '$ruta_guardada'" >&2
         echo "$ruta_guardada"
         return 0
     else
@@ -42,34 +42,51 @@ definirRuta(){
 
 archivosCantidad(){ 
     local ruta="$1"
-    archivos_carpeta=$(find "$ruta" -maxdepth 1 -type f | wc -l)
-    archivos_subcarpetas=$(find "$ruta" -mindepth 2 -type f | wc -l)
+    archivos_carpeta=$(find "$ruta" -maxdepth 1 -type f 2>/dev/null | wc -l)
+    archivos_subcarpetas=$(find "$ruta" -mindepth 2 -type f 2>/dev/null | wc -l)
     archivo_mayor=$(find "$ruta" -type f -exec du -h {} + 2>/dev/null | sort -rh | head -1 | cut -f2)
     archivo_menor=$(find "$ruta" -type f -exec du -h {} + 2>/dev/null | sort -h | head -1 | cut -f2)
-    echo "Archivos en carpeta $ruta: $archivos_carpeta"
-    echo "Archivos en subcarpetas: $archivos_subcarpetas"
+    
     if [ -n "$archivo_mayor" ]; then
+        echo "Archivos en carpeta $ruta: $archivos_carpeta"
+        echo "Archivos en subcarpetas: $archivos_subcarpetas"
         echo "Archivo más grande: $archivo_mayor"
         echo "Archivo más chico: $archivo_menor"
     else
-        echo "No se econtraron archivos dentro de esta ruta"
+        echo "No se encontraron archivos dentro de esta ruta"
     fi
 }
 
 guardarURL(){
     local ruta="$1"
-    read -r -p "Ingrese la URL a guardar: " webpage
-    if wget -q -O "$ruta/paginaweb.txt" "$webpage"; then
-        echo "Contenido de $webpage guardado en $ruta/paginaweb.txt"
+    if wget --spider -q "$webpage"; then
+        if wget -q -O "$ruta/paginaweb.txt" "$webpage"; then
+            if [ -s "$ruta/paginaweb.txt" ]; then
+                echo "Éxito: Contenido de '$webpage' guardado en '$ruta/paginaweb.txt'"
+            else
+                echo "Error: El archivo descargado está vacío." >&2
+                rm -f "$ruta/paginaweb.txt"
+                return 1
+            fi
+        else
+            echo "Error: Fallo al descargar '$webpage'." >&2
+            return 1
+        fi
     else
-        echo "Error al descargar la URL $webpage"
+        echo "Error: La URL '$webpage' no es válida o no está accesible." >&2
+        return 1
     fi
 }
 
 renombrarArchivos(){
     local ruta="$1"
-    echo "Renombrando archivos en $ruta..."
-    find "$ruta" -type f -exec mv -- '{}' '{}bck' \;
+
+    if find "$ruta" -type f -quit 2>/dev/null; then
+        echo "Renombrando archivos en $ruta..."
+        find "$ruta" -type f 2>/dev/null -exec mv -- '{}' '{}bck' \;
+    else
+        echo "No se encontraron archivos en $ruta. No se pudo renombrar nada".
+    fi
 }
 
 buscarPalabra(){
