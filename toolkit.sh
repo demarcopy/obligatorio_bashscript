@@ -150,7 +150,7 @@ while true; do
             echo "---------"
             if [ -n "$ruta_guardada" ]; then
                 echo "Ruta guarada actual: '$ruta_guarada'"
-            else
+            fi
             definirRuta
             read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
         ;;
