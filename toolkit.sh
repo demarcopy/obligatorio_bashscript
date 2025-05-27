@@ -21,7 +21,7 @@ obtenerRuta(){
                 echo "$ruta"
                 return 0
             else
-                echo "La ruta no es válida o no existe, intente nuevamente."
+                printf "\n\033[31mERROR:\033[0m '%s' no existe, intente nuevamente\n\n" "$ruta" >&2
             fi
         done
     fi
@@ -34,7 +34,7 @@ definirRuta(){
             echo "Ruta definida con exito: $ruta_guardada"
             break
         else
-            echo "La ruta no existe, intente nuevamente..."
+            printf "\n\033[31mERROR:\033[0m '%s' no existe, intente nuevamente\n\n" "$ruta_guardada" >&2
         fi
     done
 }
@@ -47,8 +47,12 @@ archivosCantidad(){
     archivo_menor=$(find "$ruta" -type f -exec du -h {} + 2>/dev/null | sort -h | head -1 | cut -f2)
     echo "Archivos en carpeta $ruta: $archivos_carpeta"
     echo "Archivos en subcarpetas: $archivos_subcarpetas"
-    echo "Archivo más grande: $archivo_mayor"
-    echo "Archivo más chico: $archivo_menor"
+    if [ -n "$archivo_mayor" ]; then
+        echo "Archivo más grande: $archivo_mayor"
+        echo "Archivo más chico: $archivo_menor"
+    else
+        echo "No se econtraron archivos dentro de esta ruta"
+    fi
 }
 
 guardarURL(){
@@ -97,13 +101,13 @@ while true; do
             echo "Opcion 1." 
             ruta=$(obtenerRuta "Ingrese la ruta de la carpeta: ")
             archivosCantidad "$ruta"
-            read -p "Presione Enter para continuar..."
+            read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
         ;;
         2)
             echo "Opcion 2."
             ruta=$(obtenerRuta "Ingrese la ruta de la carpeta: ")
             renombrarArchivos "$ruta"
-            read -p "Presione Enter para continuar..."
+            read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
         ;;
         3)
             echo "Opcion 3."
@@ -111,7 +115,7 @@ while true; do
             echo "Leyendo archivo de mayor tamaño por favor aguarde al resultado: "
             echo "Nota: Algunas carpetas no son accesibles debido a permisos insuficientes."
             find / -type f -exec du -h {} + 2>/dev/null | sort -rh | head -1
-            read -p "Presione Enter para continuar..."
+            read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
 
         ;;
         4)
@@ -119,26 +123,26 @@ while true; do
             ruta=$(obtenerRuta "Defina la ruta: ")  
             read -r -p "Ingrese la palabra que desea buscar: " palabra             
             buscarPalabra "$ruta" "$palabra"
-            read -p "Presione Enter para continuar..."
+            read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
         ;;
         5)
             echo "Opcion 5." 
             echo "Usuario actual: $(whoami)"
             echo "El sistema se encendió el: $(uptime -s)"
             echo "Fecha y hora actual: $(date)"
-            read -p "Presione Enter para continuar..."
+            read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
         ;;
         6)
             echo "Opcion 6."
             ruta=$(obtenerRuta "Ingrese la ruta de la carpeta: ")
             guardarURL "$ruta"    
-            read -p "Presione Enter para continuar..."
+            read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
         ;;
         7)
             echo "Opcion 7."  
             echo "----------"
             definirRuta
-            read -p "Presione Enter para continuar..."
+            read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
         ;;
         8)
             echo "Saliendo..."
@@ -146,7 +150,7 @@ while true; do
         ;;
         *)
             echo "Debe ingresar un codigo correcto"
-            read -p "Presione Enter para continuar..."
+            read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
         ;;
         esac
     echo "   "
