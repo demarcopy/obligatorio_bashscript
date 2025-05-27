@@ -71,7 +71,7 @@ renombrarArchivos(){
 
 buscarPalabra(){
     local ruta="$ruta_guardada"
-    local palabra="$1"
+    local palabra="$3"
     echo "Buscando '$palabra' en los archivos de $ruta..."
     resultado=$(grep -rnw "$ruta" -e "$palabra" 2>/dev/null)
     if [ -z "$resultado" ]; then
@@ -84,10 +84,9 @@ buscarPalabra(){
 
 verificarRuta() {
     local funcion="$1"
-    shift
     if [ -n "$ruta_guardada" ]; then
         echo "La ruta actual es: $ruta_guardada"
-        $funcion "$ruta_guardada"
+        $funcion "$ruta_guardada" "$@" "$@"
     else
         echo "No se ha definido una ruta, volviendo al menú principal"
         sleep 3
