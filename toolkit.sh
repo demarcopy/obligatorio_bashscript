@@ -1,11 +1,7 @@
 #!/bin/bash
 #Creado por: Garcia .J, Demarco .R, Suarez .R
 
-if [ ! -x "$0" ]; then
-    chmod +x "$0"
-    exec "$0" "$@"
-    exit
-fi
+main() {
 
 rojo='\033[0;31m'
 verde='\033[0;32m'
@@ -23,7 +19,7 @@ ruta_guardada=""
 obtenerRuta(){
     local mensaje="$1"
     if [ -n "$ruta_guardada" ]; then
-        echo -e "utilizando ruta guardada: ${VERDE}'$ruta_guardada$'{FIN}" >&2
+        echo -e "utilizando ruta guardada: ${VERDE}$ruta_guardada${FIN}" >&2
         echo "$ruta_guardada"
         return 0
     else
@@ -42,7 +38,13 @@ obtenerRuta(){
 definirRuta(){
     while true; do
         read -p "Ingrese la ruta que desea guardar: " ruta_guardada
-        if [ -d $ruta_guardada ]; then
+
+	 if [ -z "$ruta_guardada" ]; then
+	    printf "${ROJO}ERROR:${FIN} La ruta no puede estar vacia\n\n" >&2
+            continue
+	 fi
+
+	 if [ -d $ruta_guardada ]; then
             echo "Ruta definida con exito: $ruta_guardada"
             break
         else
@@ -147,7 +149,7 @@ while true; do
             echo -e "${cian}---------${FIN}"
             df -h
             echo "Leyendo archivo de mayor tamaño por favor aguarde al resultado: "
-            echo "Nota: Algunas carpetas no son accesibles debido a permisos insuficientes."
+            echo -e "${verde}Nota:${FIN} Algunas carpetas no son accesibles debido a permisos insuficientes."
             find / -type f -exec du -h {} + 2>/dev/null | sort -rh | head -1
             read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
 
@@ -155,9 +157,14 @@ while true; do
         4)
             echo -e "${cian}Opcion 1.${FIN}"
             echo -e "${cian}---------${FIN}"
-            ruta=$(obtenerRuta "Defina la ruta: ")  
-            read -r -p "Ingrese la palabra que desea buscar: " palabra             
-            buscarPalabra "$ruta" "$palabra"
+            ruta=$(obtenerRuta "Defina la ruta: ")
+	    local count=$(find "$ruta" -type f ! -name '.*' | wc -l)
+            if [ "$count" -gt 0 ]; then
+                  read -r -p "Ingrese la palabra que desea buscar: " palabra
+                  buscarPalabra "$ruta" "$palabra"
+	    else
+		  echo "No hay archivos en la ruta, no se pueden buscar palabras"
+            fi
             read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
         ;;
         5)
@@ -179,13 +186,13 @@ while true; do
             echo -e "${cian}Opcion 1.${FIN}"
             echo -e "${cian}---------${FIN}"
             if [ -n "$ruta_guardada" ]; then
-                echo "Actual ruta guardada: '$ruta_guardada'"
+                echo -e "Actual ruta guardada: ${verde}$ruta_guardada${FIN}"
             fi
             definirRuta
             read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
         ;;
         8)
-            echo "Saliendo..."
+            echo -e "${ROJO}Saliendo...${FIN}"
             break
         ;;
         *)
@@ -195,3 +202,9 @@ while true; do
         esac
     echo "   "
 done
+
+}
+
+if [ -n "$BASH_SOURCE" ] && [ "$0" == "$BASH_SOURCE" ]; then
+	main "$@"
+fi
