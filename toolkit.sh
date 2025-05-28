@@ -23,7 +23,7 @@ ruta_guardada=""
 obtenerRuta(){
     local mensaje="$1"
     if [ -n "$ruta_guardada" ]; then
-        echo -e "utilizando ruta guardada: ${VERDE}$ruta_guardada${FIN}" >&2
+        echo -e "utilizando ruta guardada: ${VERDE}'$ruta_guardada$'{FIN}" >&2
         echo "$ruta_guardada"
         return 0
     else
@@ -33,7 +33,7 @@ obtenerRuta(){
                 echo "$ruta"
                 return 0
             else
-                printf "\n\033[31mERROR:\033[0m '%s' no existe, intente nuevamente\n\n" "$ruta" >&2
+                printf "${ROJO}ERROR:${FIN} '%s' no existe, intente nuevamente\n\n" "$ruta" >&2
             fi
         done
     fi
@@ -46,7 +46,7 @@ definirRuta(){
             echo "Ruta definida con exito: $ruta_guardada"
             break
         else
-            printf "\n\033[31mERROR:\033[0m '%s' no existe, intente nuevamente\n\n" "$ruta_guardada" >&2
+            printf "${ROJO}ERROR:${FIN} '%s' no existe, intente nuevamente\n\n" "$ruta_guardada" >&2
         fi
     done
 }
@@ -74,14 +74,14 @@ guardarURL(){
     if wget --spider -q "$webpage"; then
         if wget -q -O "$ruta/paginaweb.txt" "$webpage"; then
             if [ -s "$ruta/paginaweb.txt" ]; then
-                echo -e "\e[1;32mÉxito: Contenido de '$webpage' guardado en '$ruta/paginaweb.txt'"
+                echo -e "${VERDE}Éxito:${FIN} Contenido de '$webpage' guardado en '$ruta/paginaweb.txt'"
             else
-                echo "Error: El archivo descargado está vacío." >&2
+                echo e- "${ROJO}Error:${FIN} El archivo descargado está vacío." >&2
                 rm -f "$ruta/paginaweb.txt"
                 return 1
             fi
         else
-            echo "Error: Fallo al descargar '$webpage'." >&2
+            echo e- "${ROJO}Error:${FIN} Fallo al descargar '$webpage'." >&2
             return 1
         fi
     else
@@ -96,15 +96,16 @@ renombrarArchivos(){
     if [ "$count" -gt 0 ]; then
         echo "Renombrando archivos en $ruta..."
         find "$ruta" -type f 2>/dev/null -exec mv -- '{}' '{}bck' \;
+        echo -e "Se renombraron correctamente ${verde}$count${FIN} archivos"
     else
-        echo "No se encontraron archivos en $ruta. No se pudo renombrar nada".
+        echo -e "No se encontraron archivos en ${verde}$ruta${FIN}. No se pudo renombrar nada".
     fi
 }
 
 buscarPalabra(){
     local ruta="$1"
     local palabra="$2"
-    echo "Buscando '$palabra' en los archivos de $ruta..."
+    echo -e "Buscando ${verde}'$palabra'${FIN} en los archivos de ${verde}$ruta${FIN}..."
     resultado=$(grep -rnw "$ruta" -e "$palabra" 2>/dev/null)
     if [ -z "$resultado" ]; then
         echo "No se encontraron coincidencias"
@@ -148,7 +149,7 @@ while true; do
             echo "Leyendo archivo de mayor tamaño por favor aguarde al resultado: "
             echo "Nota: Algunas carpetas no son accesibles debido a permisos insuficientes."
             find / -type f -exec du -h {} + 2>/dev/null | sort -rh | head -1
-            read -p $'${CIAN}Presione Enter para continuar...${FIN}'
+            read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
 
         ;;
         4)
@@ -157,7 +158,7 @@ while true; do
             ruta=$(obtenerRuta "Defina la ruta: ")  
             read -r -p "Ingrese la palabra que desea buscar: " palabra             
             buscarPalabra "$ruta" "$palabra"
-            read -p $'${CIAN}Presione Enter para continuar...${FIN}'
+            read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
         ;;
         5)
             echo -e "${cian}Opcion 1.${FIN}"
@@ -165,14 +166,14 @@ while true; do
             echo "Usuario actual: $(whoami)"
             echo "El sistema se encendió el: $(uptime -s)"
             echo "Fecha y hora actual: $(date)"
-            read -p $'${CIAN}Presione Enter para continuar...${FIN}'
+            read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
         ;;
         6)
             echo -e "${cian}Opcion 1.${FIN}"
             echo -e "${cian}---------${FIN}"
             ruta=$(obtenerRuta "Ingrese la ruta de la carpeta: ")
             guardarURL "$ruta"    
-            read -p $'${CIAN}Presione Enter para continuar...${FIN}'
+            read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
         ;;
         7)
             echo -e "${cian}Opcion 1.${FIN}"
@@ -181,7 +182,7 @@ while true; do
                 echo "Actual ruta guardada: '$ruta_guardada'"
             fi
             definirRuta
-            read -p $'${CIAN}Presione Enter para continuar...${FIN}'
+            read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
         ;;
         8)
             echo "Saliendo..."
@@ -189,7 +190,7 @@ while true; do
         ;;
         *)
             echo "Debe ingresar un codigo correcto"
-            read -p $'${CIAN}Presione Enter para continuar...${FIN}'
+            read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
         ;;
         esac
     echo "   "
