@@ -7,12 +7,23 @@ if [ ! -x "$0" ]; then
     exit
 fi
 
+rojo='\033[0;31m'
+verde='\033[0;32m'
+azul='\033[0;34m'
+cian='\033[0;36m'
+FIN='\e[0m'
+ROJO='\033[1;31m'
+VERDE='\033[1;32m'
+AZUL='\033[1;34m'
+CIAN='\033[1;36m'
+
+
 ruta_guardada=""
 
 obtenerRuta(){
     local mensaje="$1"
     if [ -n "$ruta_guardada" ]; then
-        echo "utilizando ruta guardada: '$ruta_guardada'" >&2
+        echo -e "utilizando ruta guardada: ${VERDE}$ruta_guardada${FIN}" >&2
         echo "$ruta_guardada"
         return 0
     else
@@ -30,7 +41,7 @@ obtenerRuta(){
 
 definirRuta(){
     while true; do
-        read -p "Ingrese la ruta deseada: " ruta_guardada
+        read -p "Ingrese la ruta que desea guardar: " ruta_guardada
         if [ -d $ruta_guardada ]; then
             echo "Ruta definida con exito: $ruta_guardada"
             break
@@ -48,10 +59,10 @@ archivosCantidad(){
     archivo_menor=$(find "$ruta" -type f -exec du -h {} + 2>/dev/null | sort -h | head -1 | cut -f2)
     
     if [ -n "$archivo_mayor" ]; then
-        echo "Archivos en carpeta $ruta: $archivos_carpeta"
-        echo "Archivos en subcarpetas: $archivos_subcarpetas"
-        echo "Archivo más grande: $archivo_mayor"
-        echo "Archivo más chico: $archivo_menor"
+        echo -e "Archivos en carpeta $ruta: ${VERDE}$archivos_carpeta${FIN}"
+        echo -e "Archivos en subcarpetas: ${VERDE}$archivos_subcarpetas${FIN}"
+        echo -e "Archivo más grande: ${VERDE}$archivo_mayor${FIN}"
+        echo -e "Archivo más chico: ${VERDE}$archivo_menor${FIN}"
     else
         echo "No se encontraron archivos dentro de esta ruta"
     fi
@@ -63,7 +74,7 @@ guardarURL(){
     if wget --spider -q "$webpage"; then
         if wget -q -O "$ruta/paginaweb.txt" "$webpage"; then
             if [ -s "$ruta/paginaweb.txt" ]; then
-                echo "Éxito: Contenido de '$webpage' guardado en '$ruta/paginaweb.txt'"
+                echo -e "\e[1;32mÉxito: Contenido de '$webpage' guardado en '$ruta/paginaweb.txt'"
             else
                 echo "Error: El archivo descargado está vacío." >&2
                 rm -f "$ruta/paginaweb.txt"
@@ -81,8 +92,8 @@ guardarURL(){
 
 renombrarArchivos(){
     local ruta="$1"
-
-    if find "$ruta" -type f -quit 2>/dev/null; then
+    local count=$(find "$ruta" -type f ! -name '.*' | wc -l)
+    if [ "$count" -gt 0 ]; then
         echo "Renombrando archivos en $ruta..."
         find "$ruta" -type f 2>/dev/null -exec mv -- '{}' '{}bck' \;
     else
@@ -105,7 +116,7 @@ buscarPalabra(){
 
 while true; do
     clear
-    echo "---------- Menu -----------"
+    echo -e "${CIAN}---------- Menu -----------${FIN}"
     echo "1) Propiedades de la carpeta"
     echo "2) Renombrar archivos"
     echo "3) Resumen del estado del disco duro"
@@ -117,60 +128,60 @@ while true; do
     read -r -p "Ingrese una opcion: " opcion
     case $opcion in
         1)
-            echo "Opcion 1."
-            echo "---------" 
+            echo -e "${cian}Opcion 1.${FIN}"
+            echo -e "${cian}---------${FIN}"
             ruta=$(obtenerRuta "Ingrese la ruta de la carpeta: ")
             archivosCantidad "$ruta"
             read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
         ;;
         2)
-            echo "Opcion 2."
-            echo "---------"
+            echo -e "${cian}Opcion 1.${FIN}"
+            echo -e "${cian}---------${FIN}"
             ruta=$(obtenerRuta "Ingrese la ruta de la carpeta: ")
             renombrarArchivos "$ruta"
             read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
         ;;
         3)
-            echo "Opcion 3."
-            echo "---------"
+            echo -e "${cian}Opcion 1.${FIN}"
+            echo -e "${cian}---------${FIN}"
             df -h
             echo "Leyendo archivo de mayor tamaño por favor aguarde al resultado: "
             echo "Nota: Algunas carpetas no son accesibles debido a permisos insuficientes."
             find / -type f -exec du -h {} + 2>/dev/null | sort -rh | head -1
-            read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
+            read -p $'${CIAN}Presione Enter para continuar...${FIN}'
 
         ;;
         4)
-            echo "Opcion 4."
-            echo "---------"
+            echo -e "${cian}Opcion 1.${FIN}"
+            echo -e "${cian}---------${FIN}"
             ruta=$(obtenerRuta "Defina la ruta: ")  
             read -r -p "Ingrese la palabra que desea buscar: " palabra             
             buscarPalabra "$ruta" "$palabra"
-            read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
+            read -p $'${CIAN}Presione Enter para continuar...${FIN}'
         ;;
         5)
-            echo "Opcion 5."
-            echo "---------"
+            echo -e "${cian}Opcion 1.${FIN}"
+            echo -e "${cian}---------${FIN}"
             echo "Usuario actual: $(whoami)"
             echo "El sistema se encendió el: $(uptime -s)"
             echo "Fecha y hora actual: $(date)"
-            read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
+            read -p $'${CIAN}Presione Enter para continuar...${FIN}'
         ;;
         6)
-            echo "Opcion 6."
-            echo "---------"
+            echo -e "${cian}Opcion 1.${FIN}"
+            echo -e "${cian}---------${FIN}"
             ruta=$(obtenerRuta "Ingrese la ruta de la carpeta: ")
             guardarURL "$ruta"    
-            read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
+            read -p $'${CIAN}Presione Enter para continuar...${FIN}'
         ;;
         7)
-            echo "Opcion 7."  
-            echo "---------"
+            echo -e "${cian}Opcion 1.${FIN}"
+            echo -e "${cian}---------${FIN}"
             if [ -n "$ruta_guardada" ]; then
-                echo "Ruta guarada actual: '$ruta_guarada'"
+                echo "Actual ruta guardada: '$ruta_guardada'"
             fi
             definirRuta
-            read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
+            read -p $'${CIAN}Presione Enter para continuar...${FIN}'
         ;;
         8)
             echo "Saliendo..."
@@ -178,7 +189,7 @@ while true; do
         ;;
         *)
             echo "Debe ingresar un codigo correcto"
-            read -p $'\033[1;34mPresione Enter para continuar...\033[0m'
+            read -p $'${CIAN}Presione Enter para continuar...${FIN}'
         ;;
         esac
     echo "   "
