@@ -44,11 +44,11 @@ definirRuta(){
             continue
 	 fi
 
-	 if [ -d $ruta_guardada ]; then
+	 if [ -d "$ruta_guardada" ]; then
             echo "Ruta definida con exito: $ruta_guardada"
             break
         else
-            printf "${ROJO}ERROR:${FIN} '%s' no existe, intente nuevamente\n\n" "$ruta_guardada" >&2
+            printf "${ROJO}ERROR:${FIN} '$ruta_guardada' no existe, intente nuevamente\n\n" >&2
         fi
     done
 }
